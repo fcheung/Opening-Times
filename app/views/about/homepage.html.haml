@@ -1,8 +1,25 @@
 - @no_banner = @no_search_bar = true
 - @onload = "sf();"
 - content_for :head do
-  %script{ :type=>'text/javascript' }
-    function sf(){document.f.location.focus();}
+  :javascript
+    function sf(){
+      document.f.location.focus();
+      if(navigator.geolocation){
+        $('startGeolocate').style.display='';        
+      }
+    }
+    
+    function startGeolocation(){
+      navigator.geolocation.getCurrentPosition(locationFound, locationFailed, {timeout: 10000})
+    }
+    
+    function locationFailed(){
+      alert("Oops, we couldn't determine your location")
+    }
+    
+    function locationFound(position){
+      window.location = '/search?location=' + encodeURIComponent(position.coords.latitude) + encodeURIComponent(', ') + encodeURIComponent(position.coords.longitude)
+    }
 
 - content_for :top_content do
   .container_16
@@ -28,6 +45,7 @@
       = text_field_tag 'location', params[:location], :size => 34
       = submit_tag 'Search', :name => nil, :class=>'button'
       </form>
+      = button_to_function 'Search Near Me', 'startGeolocation()', 'style' => 'display:none', 'id' => 'startGeolocate'
 
     %p
       Opening Times is a
