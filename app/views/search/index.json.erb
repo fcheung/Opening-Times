@@ -13,6 +13,7 @@
     "url": <%= f.url.to_json%>,
     "lat": <%= f.lat %>,
     "lng": <%= f.lng %>,
+    "normal_openings": <%= f.normal_openings.to_json :only => [:closes_mins, :opens_mins, :sequence, ]%>
     }
   },
 <% end -%>
